@@ -20,8 +20,16 @@ const generateRandomString = function() {
 app.use(express.urlencoded({ extended: true }));
 
 app.post("/urls", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+  if (Object.keys(req.body).includes('longURL')) {
+    let shortURL = generateRandomString();
+    urlDatabase[shortURL] = req.body['longURL'];
+    res.redirect(req.body['longURL']);
+  }
+});
+
+app.get("/u/:id", (req, res) => {
+  const longURL = urlDatabase[req.params.id];
+  res.redirect(longURL);
 });
 
 app.get("/", (req, res) => {
