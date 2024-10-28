@@ -10,9 +10,9 @@ const urlDatabase = {
 };
 
 const generateRandomString = function() {
-  var rString = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  var result = '';
-  for (var i = 6; i > 0; --i) 
+  let rString = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  for (let i = 6; i > 0; --i)
     result += rString[Math.floor(Math.random() * rString.length)];
   return result;
 };
