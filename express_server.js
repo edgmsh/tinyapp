@@ -23,7 +23,7 @@ app.post("/urls", (req, res) => {
   if (Object.keys(req.body).includes('longURL')) {
     let shortURL = generateRandomString();
     urlDatabase[shortURL] = req.body['longURL'];
-    res.redirect(req.body['longURL']);
+    res.redirect(`/urls/${shortURL}`);
   }
 });
 
