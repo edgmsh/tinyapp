@@ -38,6 +38,14 @@ app.post("/urls/:id/update", (req, res) => {
   
 });
 
+app.post("/login", (req, res) => {
+  if (req.body['userName'] !== undefined) {
+  res.cookie('userName',req.body['userName']);
+  return res.redirect(`/urls`);
+  }
+  return;
+});
+
 app.get("/urls/:id/updateMain", (req, res) => {
   res.redirect(`/urls/${req.params.id}`);
   
