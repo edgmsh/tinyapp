@@ -20,11 +20,17 @@ const generateRandomString = function() {
 app.use(express.urlencoded({ extended: true }));
 
 app.post("/urls", (req, res) => {
-  if (Object.keys(req.body).includes('longURL')) {
+  if (Object.keys(req.body).includes('longURL') && req.body['longURL']) {
     let shortURL = generateRandomString();
     urlDatabase[shortURL] = req.body['longURL'];
     res.redirect(`/urls/${shortURL}`);
   }
+});
+
+app.post("/urls/:id/delete", (req, res) => {
+    delete urlDatabase[req.params.id];
+    const templateVars = { urls: urlDatabase };
+    res.render("urls_index", templateVars);
 });
 
 app.get("/u/:id", (req, res) => {
