@@ -33,6 +33,18 @@ app.post("/urls/:id/delete", (req, res) => {
     
 });
 
+app.post("/urls/:id/update", (req, res) => {
+  urlDatabase[req.params.id] = req.body['longURL'];
+  res.redirect(`/urls`);
+  
+});
+
+app.get("/urls/:id/updateMain", (req, res) => {
+  //urlDatabase[req.params.id] = req.body['longURL'];
+  res.redirect(`/urls/${req.params.id}`);
+  
+});
+
 app.get("/u/:id", (req, res) => {
   const longURL = urlDatabase[req.params.id];
   res.redirect(longURL);
