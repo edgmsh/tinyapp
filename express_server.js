@@ -29,8 +29,8 @@ app.post("/urls", (req, res) => {
 
 app.post("/urls/:id/delete", (req, res) => {
     delete urlDatabase[req.params.id];
-    const templateVars = { urls: urlDatabase };
-    res.render("urls_index", templateVars);
+    res.redirect(`/urls`);
+    
 });
 
 app.get("/u/:id", (req, res) => {
