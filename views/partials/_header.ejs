@@ -19,16 +19,16 @@
       </div>
     </div>
     <div>
-      <% if(userName !== undefined && userName !== "") { %>
+      <% if(user) { %>
       <form class="form-inline" action="/logout" method="POST">
         <div class="form-group mb-2">
-          <label for="userName"></label>
-          <td>Logged as: <%= userName %></td>
+          <label for="user"></label>
+          <td>Logged as: <%= user %></td>
           <input type="hidden"
             class="form-control"
             type="text"
-            name="userName"
-            placeholder="Username"
+            name="user"
+            placeholder="user"
             style="width: 300px; margin: 1em"
           /> 
           <button type="submit" class="btn btn-primary">Logout</button>
@@ -37,12 +37,12 @@
       <% } else { %>
         <form class="form-inline" action="/login" method="POST">
           <div class="form-group mb-2">
-            <label for="userName"></label>
+            <label for="user"></label>
             <input
               class="form-control"
               type="text"
-              name="userName"
-              placeholder="Username"
+              name="user"
+              placeholder="user"
               style="width: 300px; margin: 1em"
             />
             <button type="submit" class="btn btn-primary">Login</button>
