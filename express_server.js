@@ -59,30 +59,34 @@ app.post("/urls/:id/delete", (req, res) => {
 app.post("/urls/:id/update", (req, res) => {
   urlDatabase[req.params.id] = req.body['longURL'];
   res.redirect(`/urls`);
-  
 });
 
 app.post("/login", (req, res) => {
-  if (!req.body['user']) {
+  if (!req.body['email'] || !req.body['password']) {
     return res.status(400).send('you must provide a user to proceed.');
-  } else {
-  res.cookie('user_id',req.body['user']);
-  return res.redirect(`/urls`);
+  } 
+  let user = getUserByEmail(users,req.body['email']);
+  if (user === null) {
+    return res.status(400).send('wrong credentials. please, try again.');
   }
+  if (user.password !== req.body['password']) {
+    return res.status(400).send('wrong password. please, try again.');
+  }
+  res.cookie('user_id',user);
+  return res.redirect(`/urls`);
 });
 
 app.post("/register", (req, res) => {
   if (!req.body['email'] || !req.body['password']) {
     return res.status(400).send('you must provide an email and password to proceed.');
   } 
-
-  if (getUserByEmail(users,req.body['email']) !== nu) {
-    return res.status(400).send('this email is already exists. Pick another one.');
+  if (getUserByEmail(users,req.body['email']) !== null) {
+    return res.status(400).send('this email already exists. Pick another one.');
   }
   let userID = generateRandomString();
-  res.cookie('user_id',req.body['email']);
-  users[userID] = {id: userID, email: req.body['email'],password: req.body['password']};
-  console.log(users);
+  let user = {id: userID, email: req.body['email'], password: req.body['password']};
+  res.cookie('user_id', user);
+  users[userID] = user;
   return res.redirect(`/urls`);
 });
 
@@ -102,7 +106,7 @@ app.get("/u/:id", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  res.redirect(`/urls`);
 });
 
 app.get("/urls.json", (req, res) => {
@@ -132,12 +136,15 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = {user: req.cookies["user_id"]};
+  let user = false;
+  if (req.cookies["user_id"]) {
+    user = req.cookies["user_id"];
+  }
+  const templateVars = {user: user};
   res.render("urls_new", templateVars);
 });
 
 app.get("/register", (req, res) => {
- // const templateVars = {user: false};
   res.render("register");
 });
 

@@ -23,11 +23,11 @@
       <form class="form-inline" action="/logout" method="POST">
         <div class="form-group mb-2">
           <label for="user"></label>
-          <td>Logged as: <%= user %></td>
+          <td>Logged as: <%= user.email %></td>
           <input type="hidden"
             class="form-control"
             type="text"
-            name="user"
+            name="email"
             placeholder="user"
             style="width: 300px; margin: 1em"
           /> 
@@ -36,17 +36,27 @@
       </form>
       <% } else { %>
         <form class="form-inline" action="/login" method="POST">
-          <div class="form-group mb-2">
-            <label for="user"></label>
+            <label for="user">user:</label>
             <input
-              class="form-control"
-              type="text"
-              name="user"
-              placeholder="user"
-              style="width: 300px; margin: 1em"
-            />
+            class="form-control"
+            type="email"
+            name="email"
+            placeholder=""
+            style="width: 150px; margin: 1em"
+            />              
+          <label for="password">password:</label>
+          <input
+            class="form-control"
+            type="password"
+            name="password"
+            placeholder=""
+            style="width: 150px; margin: 1em"
+          />
             <button type="submit" class="btn btn-primary">Login</button>
-          </div>
+        </form>
+        <form class="form-inline" action="/register" method="GET">
+            <button type="submit" class="btn btn-primary">Register</button>
+
         </form>
         <% } %>
     </div>
