@@ -19,20 +19,36 @@
       </div>
     </div>
     <div>
-      <form class="form-inline" action="/login" method="POST">
+      <% if(userName !== undefined && userName !== "") { %>
+      <form class="form-inline" action="/logout" method="POST">
         <div class="form-group mb-2">
           <label for="userName"></label>
           <td>Logged as: <%= userName %></td>
-          <input
+          <input type="hidden"
             class="form-control"
             type="text"
             name="userName"
             placeholder="Username"
             style="width: 300px; margin: 1em"
-          />
-          <button type="submit" class="btn btn-primary">Login</button>
+          /> 
+          <button type="submit" class="btn btn-primary">Logout</button>
         </div>
       </form>
+      <% } else { %>
+        <form class="form-inline" action="/login" method="POST">
+          <div class="form-group mb-2">
+            <label for="userName"></label>
+            <input
+              class="form-control"
+              type="text"
+              name="userName"
+              placeholder="Username"
+              style="width: 300px; margin: 1em"
+            />
+            <button type="submit" class="btn btn-primary">Login</button>
+          </div>
+        </form>
+        <% } %>
     </div>
   </nav>
 </header>

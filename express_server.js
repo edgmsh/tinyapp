@@ -41,11 +41,16 @@ app.post("/urls/:id/update", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  if (req.body['userName'] !== undefined) {
+  if (req.body['userName'] !== undefined && req.body['userName'] !== "") {
   res.cookie('userName',req.body['userName']);
   return res.redirect(`/urls`);
   }
   return;
+});
+
+app.post("/logout", (req, res) => {
+  res.clearCookie('userName');
+  res.redirect(`/urls`);
 });
 
 app.get("/urls/:id/updateMain", (req, res) => {
