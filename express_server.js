@@ -3,18 +3,12 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
-};
-
-const generateRandomString = function() {
-  let rString = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let result = '';
-  for (let i = 6; i > 0; --i)
-    result += rString[Math.floor(Math.random() * rString.length)];
-  return result;
 };
 
 const users = {
@@ -30,8 +24,23 @@ const users = {
   },
 };
 
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+const generateRandomString = function() {
+  let rString = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  for (let i = 6; i > 0; --i)
+    result += rString[Math.floor(Math.random() * rString.length)];
+  return result;
+};
+
+const getUserByEmail = function(users,email) {
+  let result = null;
+  for (let key in users) {
+    if (users[key].email === email) {
+      result = users[key];
+    }
+  }
+  return result;
+}; 
 
 app.post("/urls", (req, res) => {
   if (Object.keys(req.body).includes('longURL') && req.body['longURL']) {
@@ -65,13 +74,16 @@ app.post("/login", (req, res) => {
 app.post("/register", (req, res) => {
   if (!req.body['email'] || !req.body['password']) {
     return res.status(400).send('you must provide an email and password to proceed.');
-  } else {  
+  } 
+
+  if (getUserByEmail(users,req.body['email']) !== nu) {
+    return res.status(400).send('this email is already exists. Pick another one.');
+  }
   let userID = generateRandomString();
   res.cookie('user_id',req.body['email']);
   users[userID] = {id: userID, email: req.body['email'],password: req.body['password']};
   console.log(users);
   return res.redirect(`/urls`);
-  }
 });
 
 app.post("/logout", (req, res) => {
@@ -141,3 +153,5 @@ app.get("/urls/:id", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+
