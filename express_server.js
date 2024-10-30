@@ -94,6 +94,10 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
+app.get("/register", (req, res) => {
+  res.render("register", templateVars);
+});
+
 app.get("/urls/:id", (req, res) => {
   const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id],userName: req.cookies["userName"]};
   res.render("urls_show", templateVars);
