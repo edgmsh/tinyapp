@@ -95,7 +95,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("register", templateVars);
+  res.render("register");
 });
 
 app.get("/urls/:id", (req, res) => {
