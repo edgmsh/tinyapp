@@ -73,7 +73,7 @@ app.post("/login", (req, res) => {
     return res.status(400).send('wrong password. please, try again.');
   }
   res.cookie('user_id',user);
-  return res.redirect(`/urls`);
+  return res.redirect(`/login`);
 });
 
 app.post("/register", (req, res) => {
@@ -146,6 +146,10 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/register", (req, res) => {
   res.render("register");
+});
+
+app.get("/login", (req, res) => {
+  res.render("login");
 });
 
 app.get("/urls/:id", (req, res) => {
