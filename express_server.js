@@ -86,8 +86,17 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 app.post("/urls/:id/update", (req, res) => {
+  let user = false;
+  let userDB = {};
+  if (!req.cookies["user_id"]) {
+    return res.status(400).send('To update URLs, please, login.');
+  }
+  user = req.cookies["user_id"];
+  if (user.id !== urlDatabase[req.params.id].userID) {
+    return res.status(400).send('You only can update your URLs.');
+  }
   urlDatabase[req.params.id].longURL = req.body['longURL'];
-  res.redirect(`/urls`);
+  res.redirect(`/urls`);  
 });
 
 app.post("/login", (req, res) => {
