@@ -1,7 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const app = express();
-const PORT = 8080; // default port 8080
+const PORT = 8080; 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -67,13 +67,13 @@ app.post("/login", (req, res) => {
   } 
   let user = getUserByEmail(users,req.body['email']);
   if (user === null) {
-    return res.status(400).send('wrong credentials. please, try again.');
+    return res.status(403).send('wrong credentials. please, try again.');
   }
   if (user.password !== req.body['password']) {
-    return res.status(400).send('wrong password. please, try again.');
+    return res.status(403).send('wrong password. please, try again.');
   }
   res.cookie('user_id',user);
-  return res.redirect(`/login`);
+  return res.redirect(`/urls`);
 });
 
 app.post("/register", (req, res) => {
@@ -92,7 +92,7 @@ app.post("/register", (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.clearCookie('user_id');
-  res.redirect(`/urls`);
+  res.redirect(`/login`);
 });
 
 app.get("/urls/:id/updateMain", (req, res) => {
