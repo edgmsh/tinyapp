@@ -1,6 +1,7 @@
 const express = require("express");
 const cookieSession = require('cookie-session');
 const bcrypt = require("bcryptjs");
+const { generateRandomId, getUserByEmail, urlsForUser } = require("./helpers");
 
 const app = express();
 const PORT = 8080; 
@@ -36,31 +37,6 @@ const users = {
     password: "$2a$10$zXJ/rqZI/4Z/FbP2fmGjbug.FZuPSuDRzjUI1Id2KnXLwHXpHJR6m", // "dishwasher-funk"
   },
 };
-
-const generateRandomId = function() {
-  const id = Math.random().toString(36).substring(2, 8); // generate a random 6 char string
-  return id;
-};
-
-const getUserByEmail = function(users,email) {
-  let result = false;
-  for (let key in users) {
-    if (users[key].email === email) {
-      result = users[key];
-    }
-  }
-  return result;
-}; 
-
-const urlsForUser = function(urlDB, userId) {
-  let userDB = {};
-    for (let key in urlDB) {
-      if (urlDB[key].userID === userId) {
-        userDB[key] = urlDB[key];
-      }
-    }
-   return userDB; 
-  };
 
 app.post("/urls", (req, res) => {
   if (Object.keys(req.body).includes('longURL') && req.body['longURL']) {
@@ -107,7 +83,7 @@ app.post("/login", (req, res) => {
     return res.status(400).send('you must provide a user to proceed.');
   } 
   let user = getUserByEmail(users,req.body['email']);
-  if (user === null) {
+  if (!user) {
     return res.status(403).send('wrong credentials. please, try again.');
   }
   if (!bcrypt.compareSync(req.body['password'], user.password)) {
