@@ -1,5 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const bcrypt = require("bcryptjs");
 
 const app = express();
 const PORT = 8080; 
@@ -23,28 +24,22 @@ const users = {
   userRandomID: {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur",
+    password: "$2a$10$LPVe/xMaFyq5etKqtp1oaeIml6BbjGZir4Wy46xmMQu0S.TLsWrjW", // "purple-monkey-dinosaur"
   },
   user2RandomID: {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "dishwasher-funk",
+    password: "$2a$10$zXJ/rqZI/4Z/FbP2fmGjbug.FZuPSuDRzjUI1Id2KnXLwHXpHJR6m", // "dishwasher-funk"
   },
 };
 
 const generateRandomId = function() {
- /*
-  let rString = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let result = '';
-  for (let i = 6; i > 0; --i)
-    result += rString[Math.floor(Math.random() * rString.length)];
-  */
   const id = Math.random().toString(36).substring(2, 8); // generate a random 6 char string
   return id;
 };
 
 const getUserByEmail = function(users,email) {
-  let result = {};
+  let result = false;
   for (let key in users) {
     if (users[key].email === email) {
       result = users[key];
@@ -111,7 +106,7 @@ app.post("/login", (req, res) => {
   if (user === null) {
     return res.status(403).send('wrong credentials. please, try again.');
   }
-  if (user.password !== req.body['password']) {
+  if (!bcrypt.compareSync(req.body['password'], user.password)) {
     return res.status(403).send('wrong password. please, try again.');
   }
   res.cookie('user_id',user);
@@ -122,11 +117,11 @@ app.post("/register", (req, res) => {
   if (!req.body['email'] || !req.body['password']) {
     return res.status(400).send('you must provide an email and password to proceed.');
   } 
-  if (getUserByEmail(users,req.body['email']) !== null) {
+  if (getUserByEmail(users,req.body['email'])) {
     return res.status(400).send('this email already exists. Pick another one.');
   }
   let userID = generateRandomId();
-  let user = {id: userID, email: req.body['email'], password: req.body['password']};
+  let user = {id: userID, email: req.body['email'], password: bcrypt.hashSync(req.body['password'], 10)};
   res.cookie('user_id', user);
   users[userID] = user;
   return res.redirect(`/urls`);
