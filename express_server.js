@@ -102,6 +102,9 @@ app.get("/urls/:id/updateMain", (req, res) => {
 
 app.get("/u/:id", (req, res) => {
   const longURL = urlDatabase[req.params.id];
+  if (!longURL) {
+    return res.status(404).send('This page cannot be found.');
+  }
   res.redirect(longURL);
 });
 
@@ -139,6 +142,9 @@ app.get("/urls/new", (req, res) => {
   let user = false;
   if (req.cookies["user_id"]) {
     user = req.cookies["user_id"];
+  }
+  if (!user) {
+    return res.redirect(`/login`);
   }
   const templateVars = {user: user};
   res.render("urls_new", templateVars);
