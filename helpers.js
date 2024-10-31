@@ -1,7 +1,6 @@
 
 const generateRandomId = function() {
-  const id = Math.random().toString(36).substring(2, 8); // generate a random 6 char string
-  return id;
+  return Math.random().toString(36).substring(2, 8); // generate a random 6 char string
 };
 
 const getUserByEmail = function(users,email) {
