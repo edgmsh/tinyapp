@@ -12,14 +12,17 @@ const getUserByEmail = function(users,email) {
   return null;
 }; 
 
-const urlsForUser = function(urlDB, userId) {
+const urlsForUser = function(userDB, userId) {
+
   let userUrls = {};
-    for (let key in urlDB) {
-      if (urlDB[key].userID === userId) {
-        userUrls[key] = urlDB[key];
+  for (const key in userDB) {
+    if (userDB.hasOwnProperty(key)) {
+      if (userDB[key].userId === userId) {
+       userUrls[key] = userDB[key];
       }
     }
-   return userUrls; 
-  };
+  }
+  return userUrls; 
+};
 
   module.exports = { generateRandomId, getUserByEmail, urlsForUser };
