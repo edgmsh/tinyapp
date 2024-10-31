@@ -1,5 +1,5 @@
 const express = require("express");
-const cookieParser = require("cookie-parser");
+const cookieSession = require('cookie-session');
 const bcrypt = require("bcryptjs");
 
 const app = express();
@@ -7,7 +7,11 @@ const PORT = 8080;
 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1','key2'],
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}));
 
 const urlDatabase = {
   b6UTxQ: {
@@ -60,7 +64,7 @@ const urlsForUser = function(urlDB, userId) {
 
 app.post("/urls", (req, res) => {
   if (Object.keys(req.body).includes('longURL') && req.body['longURL']) {
-    let user = req.cookies["user_id"];
+    let user = req.session.user_id;
     if (!user) {
       return res.redirect(`/login`);
     }
@@ -73,10 +77,10 @@ app.post("/urls", (req, res) => {
 app.post("/urls/:id/delete", (req, res) => {
     let user = false;
     let userDB = {};
-    if (!req.cookies["user_id"]) {
+    if (!req.session.user_id) {
       return res.status(400).send('To delete URLs, please, login.');
     }
-    user = req.cookies["user_id"];
+    user = req.session.user_id;
     if (user.id !== urlDatabase[req.params.id].userID) {
       return res.status(400).send('You only can delete your URLs.');
     }
@@ -87,10 +91,10 @@ app.post("/urls/:id/delete", (req, res) => {
 app.post("/urls/:id/update", (req, res) => {
   let user = false;
   let userDB = {};
-  if (!req.cookies["user_id"]) {
+  if (!req.session.user_id) {
     return res.status(400).send('To update URLs, please, login.');
   }
-  user = req.cookies["user_id"];
+  user = req.session.user_id;
   if (user.id !== urlDatabase[req.params.id].userID) {
     return res.status(400).send('You only can update your URLs.');
   }
@@ -109,7 +113,7 @@ app.post("/login", (req, res) => {
   if (!bcrypt.compareSync(req.body['password'], user.password)) {
     return res.status(403).send('wrong password. please, try again.');
   }
-  res.cookie('user_id',user);
+  req.session.user_id = user;
   return res.redirect(`/urls`);
 });
 
@@ -122,7 +126,7 @@ app.post("/register", (req, res) => {
   }
   let userID = generateRandomId();
   let user = {id: userID, email: req.body['email'], password: bcrypt.hashSync(req.body['password'], 10)};
-  res.cookie('user_id', user);
+  req.session.user_id = user;
   users[userID] = user;
   return res.redirect(`/urls`);
 });
@@ -138,11 +142,11 @@ app.get("/urls/:id/updateMain", (req, res) => {
 });
 
 app.get("/u/:id", (req, res) => {
-  if (!req.cookies["user_id"]) {
+  if (!req.session.user_id) {
     return res.status(404).send('Please, login first.');
   }
-  if (req.cookies["user_id"] !== urlDatabase[req.params.id].userID) {
-    return res.status(404).send('You dan only make changes to your URLs.');
+  if (req.session.user_id.id !== urlDatabase[req.params.id].userID) {
+    return res.status(404).send('You can only make changes to your URLs.');
   }
   if (!urlDatabase[req.params.id]) {
     return res.status(404).send('This page cannot be found.');
@@ -175,8 +179,8 @@ app.get("/fetch", (req, res) => {
 app.get("/urls", (req, res) => {
   let user = false;
   let userDB = {};
-  if (req.cookies["user_id"]) {
-    user = req.cookies["user_id"];
+  if (req.session.user_id) {
+    user = req.session.user_id;
     userDB = urlsForUser(urlDatabase,user.id);
   } else {
     return res.status(400).send('To see your URLs, please, login.');
@@ -187,8 +191,8 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   let user = false;
-  if (req.cookies["user_id"]) {
-    user = req.cookies["user_id"];
+  if (req.session.user_id) {
+    user = req.session.user_id;
   } else {
     return res.redirect(`/login`);
   }
@@ -206,8 +210,8 @@ app.get("/login", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   let user = false;
-  if (req.cookies["user_id"]) {
-    user = req.cookies["user_id"];
+  if (req.session.user_id) {
+    user = req.session.user_id;
     if (user.id !== urlDatabase[req.params.id].userID) {
       return res.status(404).send('This URL does not belong to you.');
     }
