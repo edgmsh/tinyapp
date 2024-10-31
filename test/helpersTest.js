@@ -23,22 +23,22 @@ describe('getUserByEmail', function() {
   });
   it('should not return a user with valid email', function() {
     const user = getUserByEmail(testUsers,"[email protected3]")
-    const expectedUser = false;
+    const expectedUser = null;
     assert.equal(user, expectedUser);
   });
   it('should not return a user with valid email', function() {
     const user = getUserByEmail(testUsers,"")
-    const expectedUser = false;
+    const expectedUser = null;
     assert.equal(user, expectedUser);
   });
   it('should not return a user with valid email', function() {
     const user = getUserByEmail(testUsers,undefined)
-    const expectedUser = false;
+    const expectedUser = null;
     assert.equal(user, expectedUser);
   });
   it('should not return a user with valid email', function() {
     const user = getUserByEmail(testUsers,null)
-    const expectedUser = false;
+    const expectedUser = null;
     assert.equal(user, expectedUser);
   });
 });

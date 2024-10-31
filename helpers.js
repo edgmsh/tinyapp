@@ -5,23 +5,22 @@ const generateRandomId = function() {
 };
 
 const getUserByEmail = function(users,email) {
-  let result = false;
   for (let key in users) {
     if (users[key].email === email) {
-      result = users[key];
+      return users[key]; 
     }
   }
-  return result;
+  return null;
 }; 
 
 const urlsForUser = function(urlDB, userId) {
-  let userDB = {};
+  let userUrls = {};
     for (let key in urlDB) {
       if (urlDB[key].userID === userId) {
-        userDB[key] = urlDB[key];
+        userUrls[key] = urlDB[key];
       }
     }
-   return userDB; 
+   return userUrls; 
   };
 
   module.exports = { generateRandomId, getUserByEmail, urlsForUser };
