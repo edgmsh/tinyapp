@@ -121,7 +121,7 @@ app.get("/u/:id", (req, res) => {
   if (!req.session.user_id) {
     return res.status(404).send('Please, login first.');
   }
-  if (req.session.user_id.id !== urlDatabase[req.params.id].userID) {
+  if (req.session.user_id.id !== urlDatabase[req.params.id]['userID']) {
     return res.status(404).send('You can only make changes to your URLs.');
   }
   if (!urlDatabase[req.params.id]) {

@@ -12,12 +12,12 @@ const getUserByEmail = function(users,email) {
   return null;
 }; 
 
-const urlsForUser = function(userDB, userId) {
+const urlsForUser = function(userDB, userID) {
 
   let userUrls = {};
   for (const key in userDB) {
     if (userDB.hasOwnProperty(key)) {
-      if (userDB[key].userId === userId) {
+      if (userDB[key].userID === userID) {
        userUrls[key] = userDB[key];
       }
     }
