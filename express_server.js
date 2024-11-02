@@ -127,6 +127,9 @@ app.get("/u/:id", (req, res) => {
   if (!urlDatabase[req.params.id]) {
     return res.status(404).send('This page cannot be found.');
   }
+  if (!urlDatabase[req.params.id]) {
+    return res.status(404).send('This URL does not exist.');
+  }
   const longURL = urlDatabase[req.params.id].longURL;
   res.redirect(longURL);
 });
@@ -159,7 +162,7 @@ app.get("/urls", (req, res) => {
     user = req.session.user_id;
     userDB = urlsForUser(urlDatabase,user.id);
   } else {
-    return res.status(400).send('To see your URLs, please, login.');
+    return res.redirect(`/login`);
   }
   const templateVars = { user: user, urls: userDB};
   res.render("urls_index", templateVars);
@@ -177,17 +180,22 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("register");
+  const templateVars = { user: false};
+  res.render("register",templateVars);
 });
 
 app.get("/login", (req, res) => {
-  res.render("login");
+  const templateVars = { user: false};
+  res.render("login",templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
   let user = false;
   if (req.session.user_id) {
     user = req.session.user_id;
+    if (!urlDatabase[req.params.id]) {
+      return res.status(404).send('This URL does not exist.');
+    }
     if (user.id !== urlDatabase[req.params.id].userID) {
       return res.status(404).send('This URL does not belong to you.');
     }
